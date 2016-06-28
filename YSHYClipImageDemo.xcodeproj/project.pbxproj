@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E50DD9571C3384B40082FBDD /* YHSYClipImage.gif in Resources */ = {isa = PBXBuildFile; fileRef = E50DD9561C3384B40082FBDD /* YHSYClipImage.gif */; settings = {ASSET_TAGS = (); }; };
+		E50DD9571C3384B40082FBDD /* YHSYClipImage.gif in Resources */ = {isa = PBXBuildFile; fileRef = E50DD9561C3384B40082FBDD /* YHSYClipImage.gif */; };
 		E55B5C701C2268F200B01016 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E55B5C6F1C2268F200B01016 /* main.m */; };
 		E55B5C731C2268F200B01016 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E55B5C721C2268F200B01016 /* AppDelegate.m */; };
 		E55B5C761C2268F200B01016 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E55B5C751C2268F200B01016 /* ViewController.m */; };
@@ -16,7 +16,7 @@
 		E55B5C7E1C2268F200B01016 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E55B5C7C1C2268F200B01016 /* LaunchScreen.storyboard */; };
 		E55B5C891C2268F300B01016 /* YSHYClipImageDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E55B5C881C2268F300B01016 /* YSHYClipImageDemoTests.m */; };
 		E55B5C941C2268F300B01016 /* YSHYClipImageDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = E55B5C931C2268F300B01016 /* YSHYClipImageDemoUITests.m */; };
-		E55B5CA41C22692000B01016 /* YSHYClipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E55B5CA31C22692000B01016 /* YSHYClipViewController.m */; settings = {ASSET_TAGS = (); }; };
+		E55B5CA41C22692000B01016 /* YSHYClipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E55B5CA31C22692000B01016 /* YSHYClipViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -434,7 +434,7 @@
 				INFOPLIST_FILE = YSHYClipImageDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = YSHY.YSHYClipImageDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = YSHY.YSHYClipImageDemo.a;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -447,7 +447,7 @@
 				INFOPLIST_FILE = YSHYClipImageDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = YSHY.YSHYClipImageDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = YSHY.YSHYClipImageDemo.a;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

@@ -21,6 +21,7 @@
         self.clipType = CIRCULARCLIP;
         self.radius = 120;
         self.scaleRation =  10;
+        lastScale = 1.0;
     }
     return  self;
 }
@@ -54,6 +55,8 @@
     [_imageView setCenter:self.view.center];
     self.OriginalFrame = _imageView.frame;
     [self.view addSubview:_imageView];
+    
+    _imageViewScale = _imageView;
     
     //覆盖层
     _overView = [[UIView alloc]init];
@@ -130,10 +133,12 @@
     UIView * view = _imageView;
     if(pinGesture.state == UIGestureRecognizerStateBegan || pinGesture.state == UIGestureRecognizerStateChanged)
     {
-        view.transform = CGAffineTransformScale(view.transform, pinGesture.scale, pinGesture.scale);
+        view.transform = CGAffineTransformScale(_imageViewScale.transform, pinGesture.scale,pinGesture.scale);
+        pinGesture.scale = 1.0;
     }
     else if(pinGesture.state == UIGestureRecognizerStateEnded)
     {
+        lastScale = 1.0;
         CGFloat ration =  view.frame.size.width /self.OriginalFrame.size.width;
         
         if(ration>_scaleRation)
