@@ -210,7 +210,7 @@
 {
     [self.delegate ClipViewController:self FinishClipImage:[self getSmallImage]];
 }
-
+//修复图片显示方向问题
 -(UIImage *)fixOrientation:(UIImage *)image
 {
     if (image.imageOrientation == UIImageOrientationUp)
@@ -301,10 +301,13 @@
     UIGraphicsEndImageContext();
     
     if(self.clipType == CIRCULARCLIP)
-    return  [self CircularClipImage:clipImage];
+        return  [self CircularClipImage:clipImage];
     
     return clipImage;
 }
+
+
+
 
 //圆形图片
 -(UIImage *)CircularClipImage:(UIImage *)image
