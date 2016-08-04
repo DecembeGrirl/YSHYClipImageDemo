@@ -38,7 +38,6 @@
     [super viewWillDisappear:animated];
 }
 
-
 -(void)CreatUI
 {
     //验证 裁剪半径是否有效
@@ -103,7 +102,6 @@
     [_overView.layer addSublayer:layer];
 }
 
-
 //让图片自己适应裁剪框的大小
 -(void)MakeImageViewFrameAdaptClipFrame
 {
@@ -141,25 +139,24 @@
         lastScale = 1.0;
         CGFloat ration =  view.frame.size.width /self.OriginalFrame.size.width;
         
-        if(ration>_scaleRation)
+        if(ration>_scaleRation) // 缩放倍数 > 自定义的最大倍数
         {
-            
             CGRect newFrame =CGRectMake(0, 0, self.OriginalFrame.size.width * _scaleRation, self.OriginalFrame.size.height * _scaleRation);
             view.frame = newFrame;
         }else if (view.frame.size.width < self.circularFrame.size.width && self.OriginalFrame.size.width <= self.OriginalFrame.size.height)
         {
-            CGFloat rat = self.OriginalFrame.size.height / self.OriginalFrame.size.width;
-            CGRect newFrame =CGRectMake(0, 0, self.circularFrame.size.width , self.circularFrame.size.height * rat );
-            view.frame = newFrame;
+            view.frame = [self handelWidthLessHeight:view];
+            view.frame = [self handleScale:view];
         }
         else if(view.frame.size.height< self.circularFrame.size.height && self.OriginalFrame.size.height <= self.OriginalFrame.size.width)
         {
-            CGFloat rat = self.OriginalFrame.size.width / self.OriginalFrame.size.height;
-            CGRect newFrame =CGRectMake(0, 0, self.circularFrame.size.width * rat, self.circularFrame.size.height );
-            view.frame = newFrame;
+            view.frame =[self handleHeightLessWidth:view];
+            view.frame = [self handleScale:view];
         }
-        
-        [view setCenter:self.view.center];
+        else
+        {
+            view.frame = [self handleScale:view];
+        }
         self.currentFrame = view.frame;
     }
 }
@@ -167,10 +164,10 @@
 -(void)handlePanGesture:(UIPanGestureRecognizer *)panGesture
 {
     UIView * view = _imageView;
-   
+    
     if(panGesture.state == UIGestureRecognizerStateBegan || panGesture.state == UIGestureRecognizerStateChanged)
     {
-       CGPoint translation = [panGesture translationInView:view.superview];
+        CGPoint translation = [panGesture translationInView:view.superview];
         [view setCenter:CGPointMake(view.center.x + translation.x, view.center.y + translation.y)];
         
         [panGesture setTranslation:CGPointZero inView:view.superview];
@@ -206,10 +203,119 @@
         }];
     }
 }
+
+//缩放结束后 确保图片在裁剪框内
+-(CGRect )handleScale:(UIView *)view
+{
+    // 图片.right < 裁剪框.right
+    if(view.frame.origin.x + view.frame.size.width< self.circularFrame.origin.x+self.circularFrame.size.width)
+    {
+        CGFloat right =view.frame.origin.x + view.frame.size.width;
+        CGRect viewFrame = view.frame;
+        CGFloat space = self.circularFrame.origin.x+self.circularFrame.size.width - right;
+        viewFrame.origin.x+=space;
+        view.frame = viewFrame;
+    }
+    // 图片.top < 裁剪框.top
+    if(view.frame.origin.y > self.circularFrame.origin.y)
+    {
+        CGRect viewFrame = view.frame;
+        viewFrame.origin.y=self.circularFrame.origin.y;
+        view.frame = viewFrame;
+    }
+    // 图片.left < 裁剪框.left
+    if(view.frame.origin.x > self.circularFrame.origin.x)
+    {
+        CGRect viewFrame = view.frame;
+        viewFrame.origin.x=self.circularFrame.origin.x;
+        view.frame = viewFrame;
+    }
+    // 图片.bottom < 裁剪框.bottom
+    if((view.frame.size.height +view.frame.origin.y) < (self.circularFrame.origin.y + self.circularFrame.size.height))
+    {
+        CGRect viewFrame = view.frame;
+        CGFloat space = self.circularFrame.origin.y + self.circularFrame.size.height - (view.frame.size.height +view.frame.origin.y);
+        viewFrame.origin.y +=space;
+        view.frame = viewFrame;
+    }
+
+    return view.frame;
+}
+
+// 图片的高<宽 并且缩放后的图片高小于裁剪框的高
+-(CGRect )handleHeightLessWidth:(UIView *)view
+{
+    CGRect tempFrame = view.frame;
+    CGFloat rat = self.OriginalFrame.size.width / self.OriginalFrame.size.height;
+    CGFloat width = self.circularFrame.size.width * rat;
+    CGFloat height = self.circularFrame.size.height ;
+    CGFloat  x  = view.frame.origin.x ;
+    CGFloat y = self.circularFrame.origin.y;
+    
+    if(view.frame.origin.x > self.circularFrame.origin.x)
+    {
+        x = self.circularFrame.origin.x;
+    }
+    else if ((view.frame.origin.x+view.frame.size.width) < self.circularFrame.origin.x + self.circularFrame.size.width)
+    {
+        x = self.circularFrame.origin.x + self.circularFrame.size.width - width ;
+    }
+    
+    CGRect newFrame =CGRectMake(x, y, width,height);
+    view.frame = newFrame;
+    
+    if((tempFrame.origin.x > self.circularFrame.origin.x &&(tempFrame.origin.x+tempFrame.size.width) < self.circularFrame.origin.x + self.circularFrame.size.width))
+    {
+        [view setCenter:self.view.center];
+    }
+    
+    if((tempFrame.origin.y > self.circularFrame.origin.y &&(tempFrame.origin.y+tempFrame.size.height) < self.circularFrame.origin.y + self.circularFrame.size.height))
+    {
+        [view setCenter:CGPointMake(tempFrame.size.width/2 + tempFrame.origin.x, view.frame.size.height /2)];
+    }
+    return  view.frame;
+}
+
+//图片的宽<高 并且缩放后的图片宽小于裁剪框的宽
+-(CGRect)handelWidthLessHeight:(UIView *)view
+{
+    CGFloat rat = self.OriginalFrame.size.height / self.OriginalFrame.size.width;
+    CGRect tempFrame = view.frame;
+    
+    CGFloat width = self.circularFrame.size.width;
+    CGFloat height = self.circularFrame.size.height * rat ;
+    
+    CGFloat  x  = self.circularFrame.origin.x ;
+    CGFloat y = view.frame.origin.y;
+    
+    if(view.frame.origin.y > self.circularFrame.origin.y)
+    {
+        y = self.circularFrame.origin.y;
+    }
+    else if ((view.frame.origin.y+view.frame.size.height) < self.circularFrame.origin.y + self.circularFrame.size.height)
+    {
+        y = self.circularFrame.origin.y + self.circularFrame.size.height - height ;
+    }
+    CGRect newFrame =CGRectMake(x, y, width,height);
+    view.frame = newFrame;
+    
+    if((tempFrame.origin.y > self.circularFrame.origin.y &&(tempFrame.origin.y+tempFrame.size.height) < self.circularFrame.origin.y + self.circularFrame.size.height))
+    {
+        [view setCenter:self.view.center];
+        
+    }
+    if((tempFrame.origin.x > self.circularFrame.origin.x &&(tempFrame.origin.x+tempFrame.size.width) < self.circularFrame.origin.x + self.circularFrame.size.width))
+    {
+        [view setCenter:CGPointMake(view.frame.size.width/2, tempFrame.size.height /2 + tempFrame.origin.y)];
+    }
+    return  view.frame;
+}
+
 -(void)clipBtnSelected:(UIButton *)btn
 {
     [self.delegate ClipViewController:self FinishClipImage:[self getSmallImage]];
 }
+
 //修复图片显示方向问题
 -(UIImage *)fixOrientation:(UIImage *)image
 {
@@ -280,7 +386,6 @@
     return img;
 }
 
-
 //方形裁剪
 -(UIImage *)getSmallImage
 {
@@ -305,9 +410,6 @@
     
     return clipImage;
 }
-
-
-
 
 //圆形图片
 -(UIImage *)CircularClipImage:(UIImage *)image
